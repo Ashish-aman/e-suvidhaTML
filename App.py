@@ -32,14 +32,18 @@ def feature_input():
     revenue = st.number_input("Annual Revenue (in million USD)", min_value=0.0)
     debt_equity_ratio = st.number_input("Debt-to-Equity Ratio", min_value=0.0, max_value=10.0)
     
-    # Dummy Risk Calculation (for demo purposes)
-    risk_score = round((revenue / (years_in_business + 1) + debt_equity_ratio) / 100, 2)
-    risk_level = "High" if risk_score > 0.7 else "Medium" if risk_score > 0.4 else "Low"
+    # Calculate button
+    if st.button("Calculate Risk"):
+        # Dummy Risk Calculation (for demo purposes)
+        risk_score = round((revenue / (years_in_business + 1) + debt_equity_ratio) / 100, 2)
+        risk_level = "High" if risk_score > 0.7 else "Medium" if risk_score > 0.4 else "Low"
 
-    # Display the calculated risk score and level
-    st.write("### Risk Score and Level")
-    st.write(f"**Risk Score for {vendor_name}:** {risk_score}")
-    st.write(f"**Risk Level:** {risk_level}")
+        # Display the calculated risk score and level
+        st.write("### Risk Score and Level")
+        st.write(f"**Risk Score for {vendor_name}:** {risk_score}")
+        st.write(f"**Risk Level:** {risk_level}")
+    else:
+        st.write("Enter the vendor details and click 'Calculate Risk' to assess the risk.")
 
 # Display the Dashboard
 def risk_overview(df):
