@@ -35,9 +35,8 @@ def feature_input():
     # Calculate button
     if st.button("Calculate Risk"):
         # Improved Risk Calculation
-        risk_score = round(
-            (0.4 * np.log1p(revenue) + 0.6 * debt_equity_ratio) / 100, 2
-        )
+        risk_score = round((revenue / (years_in_business + 1) + debt_equity_ratio) / 100, 2)
+
         risk_level = "High" if risk_score > 0.7 else "Medium" if risk_score > 0.4 else "Low"
 
         # Display the calculated risk score and level
