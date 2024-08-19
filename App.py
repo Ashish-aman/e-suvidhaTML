@@ -12,6 +12,35 @@ def load_data():
     df = pd.DataFrame(data)
     return df
 
+# Feature Input Page
+def feature_input():
+    st.title("Tata Motors e-Suvidha: Vendor Risk Feature Input")
+
+    # Dropdown options
+    industry_options = ["Automotive", "Electronics", "Textiles", "Chemicals"]
+    location_options = ["India", "USA", "Germany", "China"]
+    credit_rating_options = ["AAA", "AA", "A", "BBB", "BB", "B"]
+    compliance_certifications = ["ISO 9001", "ISO 27001", "GDPR Compliant", "None"]
+
+    # User inputs
+    vendor_name = st.text_input("Vendor Name")
+    industry = st.selectbox("Industry", industry_options)
+    location = st.selectbox("Geographical Location", location_options)
+    credit_rating = st.selectbox("Credit Rating", credit_rating_options)
+    compliance = st.multiselect("Compliance Certifications", compliance_certifications)
+    years_in_business = st.slider("Years in Business", 1, 100)
+    revenue = st.number_input("Annual Revenue (in million USD)", min_value=0.0)
+    debt_equity_ratio = st.number_input("Debt-to-Equity Ratio", min_value=0.0, max_value=10.0)
+    
+    # Dummy Risk Calculation (for demo purposes)
+    risk_score = round((revenue / (years_in_business + 1) + debt_equity_ratio) / 100, 2)
+    risk_level = "High" if risk_score > 0.7 else "Medium" if risk_score > 0.4 else "Low"
+
+    # Display the calculated risk score and level
+    st.write("### Risk Score and Level")
+    st.write(f"**Risk Score for {vendor_name}:** {risk_score}")
+    st.write(f"**Risk Level:** {risk_level}")
+
 # Display the Dashboard
 def risk_overview(df):
     st.title("Tata Motors e-Suvidha: Vendor Credit Risk Overview")
@@ -62,7 +91,7 @@ def expert_review():
 # Main application
 def main():
     st.sidebar.title("Tata Motors e-Suvidha: Credit Risk Assessment")
-    page = st.sidebar.selectbox("Choose a section", ["Risk Overview", "Document Insights", "Expert Validation"])
+    page = st.sidebar.selectbox("Choose a section", ["Risk Overview", "Document Insights", "Expert Validation", "Feature Input"])
 
     df = load_data()
 
@@ -72,6 +101,8 @@ def main():
         document_insights()
     elif page == "Expert Validation":
         expert_review()
+    elif page == "Feature Input":
+        feature_input()
 
 if __name__ == "__main__":
     main()
