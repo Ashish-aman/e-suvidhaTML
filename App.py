@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# Simulated data
+# Simulated initial data
 def load_data():
     data = {
         "Vendor": ["Vendor A", "Vendor B", "Vendor C"],
@@ -42,12 +42,31 @@ def feature_input():
         st.write("### Risk Score and Level")
         st.write(f"**Risk Score for {vendor_name}:** {risk_score}")
         st.write(f"**Risk Level:** {risk_level}")
+
+        # Add the new entry to the session state dataset
+        new_entry = {
+            "Vendor": vendor_name,
+            "Risk Score": risk_score,
+            "Risk Level": risk_level,
+            "Last Updated": pd.Timestamp.now().strftime("%Y-%m-%d")
+        }
+
+        # Update session state
+        if 'df' not in st.session_state:
+            st.session_state.df = load_data()
+
+        st.session_state.df = st.session_state.df.append(new_entry, ignore_index=True)
     else:
         st.write("Enter the vendor details and click 'Calculate Risk' to assess the risk.")
 
 # Display the Dashboard
-def risk_overview(df):
+def risk_overview():
     st.title("Tata Motors e-Suvidha: Vendor Credit Risk Overview")
+
+    if 'df' not in st.session_state:
+        st.session_state.df = load_data()
+
+    df = st.session_state.df
 
     st.write("### Vendor Risk Scores")
     st.dataframe(df)
@@ -97,10 +116,8 @@ def main():
     st.sidebar.title("Tata Motors e-Suvidha: Credit Risk Assessment")
     page = st.sidebar.selectbox("Choose a section", ["Risk Overview", "Document Insights", "Expert Validation", "Feature Input"])
 
-    df = load_data()
-
     if page == "Risk Overview":
-        risk_overview(df)
+        risk_overview()
     elif page == "Document Insights":
         document_insights()
     elif page == "Expert Validation":
