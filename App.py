@@ -34,8 +34,10 @@ def feature_input():
     
     # Calculate button
     if st.button("Calculate Risk"):
-        # Dummy Risk Calculation (for demo purposes)
-        risk_score = round((revenue / (years_in_business + 1) + debt_equity_ratio) / 100, 2)
+        # Improved Risk Calculation
+        risk_score = round(
+            (0.4 * np.log1p(revenue) + 0.6 * debt_equity_ratio) / 100, 2
+        )
         risk_level = "High" if risk_score > 0.7 else "Medium" if risk_score > 0.4 else "Low"
 
         # Display the calculated risk score and level
@@ -44,18 +46,18 @@ def feature_input():
         st.write(f"**Risk Level:** {risk_level}")
 
         # Add the new entry to the session state dataset
-        new_entry = {
-            "Vendor": vendor_name,
-            "Risk Score": risk_score,
-            "Risk Level": risk_level,
-            "Last Updated": pd.Timestamp.now().strftime("%Y-%m-%d")
-        }
+        new_entry = pd.DataFrame({
+            "Vendor": [vendor_name],
+            "Risk Score": [risk_score],
+            "Risk Level": [risk_level],
+            "Last Updated": [pd.Timestamp.now().strftime("%Y-%m-%d")]
+        })
 
         # Update session state
         if 'df' not in st.session_state:
             st.session_state.df = load_data()
 
-        st.session_state.df = st.session_state.df.append(new_entry, ignore_index=True)
+        st.session_state.df = pd.concat([st.session_state.df, new_entry], ignore_index=True)
     else:
         st.write("Enter the vendor details and click 'Calculate Risk' to assess the risk.")
 
